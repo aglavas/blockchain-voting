@@ -14,10 +14,10 @@ contract Elections {
     uint end;
   }
   mapping(address => bool) public voters;
-  mapping(address => mapping(uint => bool)) votes;
+  mapping(address => mapping(uint => bool)) public votes;
   mapping(uint => Ballot) public ballots;
   address public adminAddress;
-  uint nextBallot;
+  uint public nextBallot;
 
   constructor() {
     adminAddress = msg.sender;
@@ -50,6 +50,10 @@ contract Elections {
   function result(uint ballotId) view external returns(Choice[] memory) {
     require(block.timestamp >= ballots[ballotId].end, 'ballot is not over yet');
     return ballots[ballotId].choices;
+  }
+
+  function getBallotData(uint ballotId) view external returns(Ballot memory, Choice[] memory) {
+    return (ballots[ballotId], ballots[ballotId].choices);
   }
 
   modifier onlyAdmin() {
